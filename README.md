@@ -1,50 +1,151 @@
-# Welcome to your Expo app 👋
+# RouteHub – Transportation Management & Development Platform
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## Overview
 
-## Get started
+RouteHub is a comprehensive transportation management platform designed to digitalize and optimize bus operator businesses.
 
-1. Install dependencies
+The system supports end-to-end operations including:
 
-   ```bash
-   npm install
-   ```
+- Passenger booking & trip management
+- Driver & fleet management
+- Hub/station coordination
+- Financial & operational reporting
+- Real-time monitoring & administration
 
-2. Start the app
+RouteHub is built with a microservices architecture, scalable infrastructure, and cloud-native deployment strategy.
 
-   ```bash
-   npx expo start
-   ```
+---
 
-In the output, you'll find options to open the app in a
+### Core Principles
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- Microservices-based backend architecture
+- RESTful API design
+- Stateless services
+- Containerized deployment (Docker)
+- Kubernetes-ready infrastructure
+- GitOps-based CI/CD workflow
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+---
 
-## Get a fresh project
+## Repository Structure
 
-When you're ready, run:
+The RouteHub ecosystem consists of multiple repositories organized by domain and responsibility.
 
-```bash
-npm run reset-project
-```
+### Backend Services
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+| Repository                 | Description                                        |
+| -------------------------- | -------------------------------------------------- |
+| routex-hub-user-service    | User management, authentication, role & permission |
+| routex-hub-driver-service  | Driver profile, availability, and operations       |
+| routex-hub-trip-service    | Trip scheduling and route management               |
+| routex-hub-booking-service | Passenger booking & ticket handling                |
+| routex-hub-payment-service | Payment integration & transaction processing       |
+| routex-hub-gateway         | API Gateway & request routing                      |
+| routex-hub-config          | Centralized configuration management               |
 
-## Learn more
+---
 
-To learn more about developing your project with Expo, look at the following resources:
+### Frontend Applications
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+| Application   | Description                             |
+| ------------- | --------------------------------------- |
+| Driver App    | Mobile application for drivers          |
+| Customer App  | Mobile booking application              |
+| Admin Portal  | Web-based internal management dashboard |
+| Global Portal | Public-facing web platform              |
 
-## Join the community
+---
 
-Join our community of developers creating universal apps.
+### Infrastructure & DevOps
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+| Repository                   | Description                                |
+| ---------------------------- | ------------------------------------------ |
+| routex-hub-deployment-config | GitOps deployment configuration            |
+| CI/CD Pipelines              | Automated build, tag, release & deployment |
+| Kubernetes Manifests         | Cluster deployment resources               |
+
+---
+
+## Technology Stack
+
+### Backend
+
+- Java 21
+- Spring Boot
+- Spring Security
+- JPA / Hibernate
+- PostgreSQL
+- Redis (optional caching)
+- Kafka (optional event streaming)
+
+### Mobile
+
+- React Native / Expo
+
+### Frontend Web
+
+- React / Next.js
+
+### DevOps
+
+- Docker
+- Kubernetes
+- GitHub / GitLab CI
+- GHCR (GitHub Container Registry)
+
+---
+
+## Security
+
+- JWT-based authentication
+- Role-based access control (RBAC)
+- Encrypted credential storage
+- Secure service-to-service communication
+
+---
+
+## Deployment Strategy
+
+RouteHub follows a GitOps-based deployment model:
+
+1. Code merged into `master`
+2. CI auto-build & auto-tag
+3. Docker image pushed to container registry
+4. GitOps repository updated
+5. Kubernetes auto-sync deployment
+
+### Environments
+
+- dev
+- staging
+- production
+
+---
+
+## Core Business Domains
+
+RouteHub manages the following core entities:
+
+- Users (Admin / Staff / Customer)
+- Drivers
+- Vehicles
+- Routes
+- Trips
+- Bookings
+- Payments
+- Hubs / Stations
+
+---
+
+## Contribution Workflow
+
+1. Create feature branch
+2. Submit Pull Request
+3. Code review required
+4. Protected master branch (no direct merge)
+
+---
+
+## License
+
+Private project – All rights reserved.
