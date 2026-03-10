@@ -354,19 +354,14 @@ const Booking = () => {
         <Pressable
           disabled={!canContinue}
           onPress={() => {
-            if (!canContinue) {
-              Alert.alert("Error", "Please fill required information");
-              return;
-            }
-
-            Alert.alert(
-              "Confirm booking",
-              `Customer: ${customerName}\nPhone: ${customerPhone}\nSeats: ${selectedSeats.join(", ")}\nTotal: ${formatVnd(totalAmount)}`,
-            );
-
-            // TODO:
-            // call create booking / confirm booking API
-            // router.push("/payment")
+            router.push({
+              pathname: "/payment",
+              params: {
+                totalAmount: totalAmount.toString(),
+                routeData: JSON.stringify(routeData),
+                selectedSeats: JSON.stringify(selectedSeats),
+              },
+            });
           }}
           className={`rounded-2xl py-4 mb-4 items-center justify-center shadow-sm ${
             canContinue ? "bg-[#12B3A8]" : "bg-gray-300"

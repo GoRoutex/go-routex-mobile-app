@@ -5,6 +5,7 @@ import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import {
   api,
   API_BASE_URL,
+  bookingapi,
   GET_ALL_SEAT_PATH,
   HOLD_SEAT_PATH,
 } from "@/utils/env";
@@ -167,7 +168,7 @@ const RouteDetail = () => {
 
     console.log(routeData.id);
     try {
-      const response = await api.post<HoldSeatResponse>(
+      const response = await bookingapi.post<HoldSeatResponse>(
         HOLD_SEAT_PATH,
         payload,
       );
@@ -218,7 +219,7 @@ const RouteDetail = () => {
 
     setLoadingSeat(true);
     try {
-      const response = await api.post<GetAllSeatResponse>(
+      const response = await bookingapi.post<GetAllSeatResponse>(
         GET_ALL_SEAT_PATH,
         payload,
       );

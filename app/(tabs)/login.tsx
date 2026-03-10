@@ -2,6 +2,7 @@ import { View, Text, TextInput, Pressable, Alert } from "react-native";
 import React, { useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { Image } from "expo-image";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -22,14 +23,12 @@ const Login = () => {
   return (
     <View className="flex-1 bg-[#F5F7FA] px-4 pt-16">
       <View className="items-center mb-8">
-        <View className="w-20 h-20 rounded-full bg-[#192031] items-center justify-center mb-4">
-          <MaterialCommunityIcons
-            name="account-circle-outline"
-            size={42}
-            color="white"
+        <View className="mt-5 mb-5 py-5 px-5">
+          <Image
+            source={require("../../assets/images/logo-1.png")}
+            style={{ width: 100, height: 100 }}
           />
         </View>
-
         <Text className="text-2xl font-extrabold text-gray-900">Login</Text>
         <Text className="text-gray-500 mt-2 text-center">
           Sign in to manage routes, vehicles and bookings

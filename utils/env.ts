@@ -3,7 +3,7 @@ import { encode as btoa } from "base-64";
 
 // src/utils/env.ts
 export const API_BASE_URL =
-  process.env.EXPO_PUBLIC_API_BASE_URL ?? "http://192.168.1.75:8000";
+  process.env.EXPO_PUBLIC_API_BASE_URL ?? "http://192.168.1.84:8000";
 
 export const SEARCH_LOCATION_PATH =
   "/api/v1/management/location-service/search";
@@ -18,6 +18,16 @@ const USERNAME = "admin";
 const PASSWORD = "admin";
 
 const basicToken = btoa(`${USERNAME}:${PASSWORD}`);
+
+
+export const bookingapi =  axios.create({
+  baseURL: "http://192.168.1.84:8001",
+  timeout: 8000,
+  headers: {
+    Authorization: `Basic ${basicToken}`,
+    Accept: "application/json",
+  },
+});
 
 export const api = axios.create({
   baseURL: API_BASE_URL,

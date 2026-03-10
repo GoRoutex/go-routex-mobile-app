@@ -74,6 +74,7 @@ export default function LandingPage() {
                   ROUTEX
                 </Text>
               </View>
+
             </View>
 
             <Pressable
