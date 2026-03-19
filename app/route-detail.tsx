@@ -1,10 +1,8 @@
-import { View, Text, Pressable, Alert, ScrollView } from "react-native";
+import { View, Text, Pressable, Alert, ScrollView, ActivityIndicator } from "react-native";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import {
-  api,
-  API_BASE_URL,
   bookingapi,
   GET_ALL_SEAT_PATH,
   HOLD_SEAT_PATH,
@@ -166,7 +164,6 @@ const RouteDetail = () => {
 
     setHoldingSeat(true);
 
-    console.log(routeData.id);
     try {
       const response = await bookingapi.post<HoldSeatResponse>(
         HOLD_SEAT_PATH,
@@ -177,8 +174,8 @@ const RouteDetail = () => {
 
       if (resultCode && resultCode !== "0000") {
         Alert.alert(
-          "Error",
-          response.data?.result?.description || "Hold seat failed",
+          "Thông báo",
+          response.data?.result?.description || "Giữ chỗ không thành công",
         );
         await fetchRouteSeats();
         return;
@@ -193,7 +190,9 @@ const RouteDetail = () => {
       });
     } catch (error: any) {
       console.log("Hold Seat Error: ", error?.response?.data ?? error);
-      Alert.alert("Error", "Unable to hold selected seats");
+      Alert.alert("Lỗi", "Không thể giữ chỗ các ghế đã chọn");
+    } finally {
+      setHoldingSeat(false);
     }
   };
 
@@ -227,40 +226,27 @@ const RouteDetail = () => {
       setRouteSeat(response.data?.data ?? []);
     } catch (error: any) {
       console.log("Fetch Route Seat Error: ", error?.response.data ?? error);
-      Alert.alert("Error", "Can't fetch Route Seat");
+      Alert.alert("Lỗi", "Không thể tải danh sách chỗ ngồi");
       setRouteSeat([]);
     } finally {
       setLoadingSeat(false);
     }
   }, [routeData.id]);
 
-  const allSeats = useMemo(() => {
-    if (!routeSeat || routeSeat.length === 0) return {};
-
-    return [...routeSeat]
-      .map((seat) => seat.seatNo)
-      .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
-  }, [routeSeat]);
-
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
-
   const canContinue = selectedSeats.length > 0;
-
   const [bottomPanelHeight, setBottomPanelHeight] = useState(0);
 
   const seatStatusMap = useMemo(() => {
     const map = new Map<string, RouteSeatStatus>();
-
     routeSeat.forEach((seat) => {
       map.set(seat.seatNo, seat.status);
     });
-
     return map;
   }, [routeSeat]);
 
   const toggleSeat = (seatNo: string) => {
     const status = seatStatusMap.get(seatNo) ?? "AVAILABLE";
-
     if (status === "SOLD" || status === "HELD" || status === "BLOCKED") return;
 
     setSelectedSeats((prev) =>
@@ -280,138 +266,138 @@ const RouteDetail = () => {
   );
 
   return (
-    <View className="flex-1 bg-[#F5F7FA]">
+    <View className="flex-1 bg-brand-surface font-sans">
       {/* Header */}
       <View
-        className="w-full bg-[#192031] pt-16 pb-6"
+        className="w-full bg-brand-dark pt-16 pb-12 overflow-hidden relative"
         style={{
-          borderBottomLeftRadius: 30,
-          borderBottomRightRadius: 30,
+          borderBottomLeftRadius: 50,
+          borderBottomRightRadius: 50,
         }}
       >
-        <View className="flex-row items-center justify-between px-3">
+        <View className="absolute top-0 right-0 w-80 h-80 bg-brand-primary/10 rounded-full -mr-40 -mt-40 blur-3xl opacity-50" />
+        <View className="flex-row items-center justify-between px-8 relative z-10">
           <Pressable
             onPress={() => router.back()}
-            className="h-10 w-10 rounded-full bg-gray-500 items-center justify-center"
+            className="h-12 w-12 rounded-2xl bg-white/10 items-center justify-center border border-white/5 backdrop-blur-md active:scale-95 transition-all"
           >
-            <MaterialIcons name="keyboard-arrow-left" size={28} color="white" />
+            <MaterialIcons name="keyboard-arrow-left" size={32} color="white" />
           </Pressable>
 
-          <Text className="text-white font-extrabold text-lg">
-            Route Detail
-          </Text>
+          <Text className="text-white font-black text-xl tracking-tight">Chọn chỗ ngồi</Text>
 
-          <MaterialCommunityIcons
-            size={26}
-            color="white"
-            name="dots-horizontal"
-          />
+          <View className="w-12 h-12 rounded-2xl bg-brand-primary/20 items-center justify-center border border-brand-primary/20 backdrop-blur-md">
+            <MaterialCommunityIcons name="bus-articulated-front" size={24} color="#0EA5E9" />
+          </View>
+        </View>
+
+        <View className="mt-8 px-8 flex-row justify-between items-end relative z-10">
+           <View>
+              <Text className="text-slate-400 font-bold text-xs uppercase tracking-widest mb-2">Hành trình</Text>
+              <Text className="text-white text-3xl font-black tracking-tighter">
+                {routeData.origin} <Text className="text-brand-primary">→</Text> {routeData.destination}
+              </Text>
+           </View>
+           <View className="bg-brand-primary/20 px-4 py-2 rounded-2xl border border-brand-primary/20">
+              <Text className="text-brand-primary font-black text-xs">{routeData.routeCode}</Text>
+           </View>
         </View>
       </View>
 
       <ScrollView
-        className="flex-1"
+        className="flex-1 px-6 -mt-8"
         contentContainerStyle={{
-          padding: 16,
-          paddingBottom: bottomPanelHeight + 24,
+          paddingBottom: bottomPanelHeight + 40,
         }}
+        showsVerticalScrollIndicator={false}
       >
-        {/* Route Info */}
-        <View className="bg-white rounded-2xl p-4 border border-gray-100">
-          <View className="flex-row justify-between items-start">
-            <View className="flex-1 pr-3">
-              <Text className="text-lg font-extrabold text-gray-900">
-                {routeData.origin} → {routeData.destination}
-              </Text>
-              <Text className="text-sm text-gray-500 mt-1">
-                {routeData.routeCode}
-              </Text>
-            </View>
+        {/* Route Info Card */}
+        <View className="bg-white rounded-[2.5rem] p-8 shadow-2xl shadow-slate-200/50 border border-slate-50 mb-6">
+           <View className="flex-row justify-between items-center mb-6">
+              <View className="bg-emerald-50 px-4 py-2 rounded-full border border-emerald-100 flex-row items-center">
+                 <View className="w-2 h-2 rounded-full bg-emerald-500 mr-2" />
+                 <Text className="text-emerald-700 font-black text-xs uppercase tracking-widest">
+                   {routeData.availableSeats ?? 0} ghế trống
+                 </Text>
+              </View>
+              <View className="flex-row items-center">
+                 <MaterialCommunityIcons name="bus-side" size={20} color="#94A3B8" />
+                 <Text className="text-slate-400 font-black text-xs ml-2 tracking-widest">{routeData.vehiclePlate || "—"}</Text>
+              </View>
+           </View>
 
-            <View className="bg-[#EAFBF9] rounded-full px-3 py-1">
-              <Text className="text-[#1f615d] font-semibold text-xs">
-                {routeData.availableSeats ?? 0} seats left
-              </Text>
-            </View>
-          </View>
-
-          <View className="mt-4 flex-row justify-between items-center">
+           <View className="flex-row justify-between items-center px-2">
             <View>
-              <Text className="text-lg font-extrabold text-gray-900">
+              <Text className="text-slate-400 font-black text-[10px] uppercase tracking-widest mb-1">Khởi hành</Text>
+              <Text className="text-2xl font-black text-slate-900 tracking-tighter">
                 {formatTimeHHmm(routeData.plannedStartTime)}
               </Text>
-              <Text className="text-xs text-gray-500">Depart</Text>
-            </View>
-
-            <View className="items-center">
-              <Text className="text-xs text-gray-500">
-                {durationText(
-                  routeData.plannedStartTime,
-                  routeData.plannedEndTime,
-                )}
-              </Text>
-              <View className="w-24 h-[2px] bg-gray-200 mt-1 mb-1 rounded-full" />
-              <Text className="text-xs text-gray-500">
+              <Text className="text-slate-500 font-bold text-xs mt-1">
                 {formatDateDDMMYYYY(routeData.plannedStartTime)}
               </Text>
             </View>
 
+            <View className="items-center flex-1 px-4">
+               <View className="bg-brand-primary/5 px-3 py-1 rounded-full border border-brand-primary/10 mb-2">
+                  <Text className="text-brand-primary font-black text-[10px]">
+                    {durationText(routeData.plannedStartTime, routeData.plannedEndTime)}
+                  </Text>
+               </View>
+              <View className="flex-row items-center w-full">
+                <View className="h-1 w-1 rounded-full bg-brand-primary mr-1" />
+                <View className="h-[2px] flex-1 bg-slate-100 rounded-full" />
+                <View className="h-1 w-1 rounded-full bg-slate-300 ml-1" />
+              </View>
+            </View>
+
             <View className="items-end">
-              <Text className="text-lg font-extrabold text-gray-900">
+              <Text className="text-slate-400 font-black text-[10px] uppercase tracking-widest mb-1">Kết thúc</Text>
+              <Text className="text-2xl font-black text-slate-900 tracking-tighter">
                 {formatTimeHHmm(routeData.plannedEndTime)}
               </Text>
-              <Text className="text-xs text-gray-500">Arrive</Text>
+              <Text className="text-slate-500 font-bold text-xs mt-1">
+                {formatDateDDMMYYYY(routeData.plannedEndTime)}
+              </Text>
             </View>
-          </View>
-
-          <View className="mt-4 border-t border-gray-100 pt-4">
-            <Text className="text-xs text-gray-500">Pickup branch</Text>
-            <Text className="text-sm text-gray-800 font-semibold mt-1">
-              {routeData.pickupBranch || "—"}
-            </Text>
-
-            <Text className="text-xs text-gray-500 mt-3">Vehicle</Text>
-            <Text className="text-sm text-gray-800 font-semibold mt-1">
-              {routeData.vehicleType || "—"} • {routeData.vehiclePlate || "—"}
-            </Text>
           </View>
         </View>
 
-        {/* Seat legend */}
-        <View className="bg-white rounded-2xl p-4 border border-gray-100 mt-4">
-          <Text className="text-base font-extrabold text-gray-900 mb-4">
-            Select seats
-          </Text>
-
-          <View className="flex-row justify-between mb-4">
-            <View className="flex-row items-center">
-              <View className="w-4 h-4 rounded bg-white border border-gray-400 mr-2" />
-              <Text className="text-xs text-gray-600">Available</Text>
-            </View>
-
-            <View className="flex-row items-center">
-              <View className="w-4 h-4 rounded bg-[#12B3A8] mr-2" />
-              <Text className="text-xs text-gray-600">Selected</Text>
-            </View>
-
-            <View className="flex-row items-center">
-              <View className="w-4 h-4 rounded bg-gray-300 mr-2" />
-              <Text className="text-xs text-gray-600">Sold</Text>
-            </View>
-
-            <View className="flex-row items-center">
-              <View className="w-4 h-4 rounded bg-[#FFE8E6] mr-2" />
-              <Text className="text-xs text-gray-600">Processing</Text>
+        {/* Seat Map Area */}
+        <View className="bg-white rounded-[2.5rem] p-8 shadow-2xl shadow-slate-200/50 border border-slate-50">
+          <View className="flex-row items-center justify-between mb-8">
+            <Text className="text-lg font-black text-slate-900 tracking-tight">Sơ đồ chỗ ngồi</Text>
+            <View className="w-10 h-10 rounded-xl bg-slate-50 items-center justify-center border border-slate-100">
+               <MaterialCommunityIcons name="steering" size={20} color="#94A3B8" />
             </View>
           </View>
 
-          {/* Seat map */}
+          {/* Legend */}
+          <View className="flex-row justify-between mb-10 bg-slate-50/50 p-4 rounded-3xl border border-slate-50">
+            <View className="items-center">
+              <View className="w-6 h-6 rounded-lg bg-white border-2 border-slate-200 mb-2 shadow-sm" />
+              <Text className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Trống</Text>
+            </View>
+            <View className="items-center">
+              <View className="w-6 h-6 rounded-lg bg-brand-primary mb-2 shadow-sm shadow-brand-primary/30" />
+              <Text className="text-[10px] text-brand-primary font-black uppercase tracking-widest">Đang chọn</Text>
+            </View>
+            <View className="items-center">
+              <View className="w-6 h-6 rounded-lg bg-slate-200 mb-2" />
+              <Text className="text-[10px] text-slate-300 font-black uppercase tracking-widest">Đã bán</Text>
+            </View>
+            <View className="items-center">
+              <View className="w-6 h-6 rounded-lg bg-rose-100 border border-rose-200 mb-2" />
+              <Text className="text-[10px] text-rose-300 font-black uppercase tracking-widest">Đang giữ</Text>
+            </View>
+          </View>
+
           {loadingSeat ? (
-            <View className="py-6 items-center">
-              <Text className="text-gray-500">Loading seat map...</Text>
+            <View className="py-20 items-center">
+              <ActivityIndicator size="large" color="#0EA5E9" />
+              <Text className="text-slate-400 font-bold mt-4">Đang tải sơ đồ...</Text>
             </View>
           ) : (
-            <View className="flex-row flex-wrap justify-between">
+            <View className="flex-row flex-wrap justify-between px-2">
               {routeSeat
                 .slice()
                 .sort((a, b) =>
@@ -422,40 +408,40 @@ const RouteDetail = () => {
                 .map((seat) => {
                   const seatNo = seat.seatNo;
                   const status = seat.status ?? "AVAILABLE";
-
                   const isSold = status === "SOLD";
                   const isHeld = status === "HELD";
                   const isBlocked = status === "BLOCKED";
                   const isSelected = selectedSeats.includes(seatNo);
-
                   const disabled = isSold || isHeld || isBlocked;
 
-                  const bgClass = isSold
-                    ? "bg-gray-300"
-                    : isHeld
-                      ? "bg-[#FFE8E6]"
-                      : isBlocked
-                        ? "bg-gray-500"
-                        : isSelected
-                          ? "bg-[#12B3A8]"
-                          : "bg-white";
+                  let containerClasses = "w-[22%] aspect-square mb-4 rounded-2xl border-2 items-center justify-center transition-all ";
+                  let textClasses = "font-black text-sm ";
 
-                  const textClass = isSelected
-                    ? "text-white"
-                    : disabled
-                      ? "text-gray-500"
-                      : "text-gray-800";
+                  if (isSold) {
+                    containerClasses += "bg-slate-100 border-slate-100 opacity-40";
+                    textClasses += "text-slate-400";
+                  } else if (isHeld) {
+                    containerClasses += "bg-rose-50 border-rose-100";
+                    textClasses += "text-rose-200";
+                  } else if (isBlocked) {
+                    containerClasses += "bg-slate-200 border-slate-200";
+                    textClasses += "text-slate-400";
+                  } else if (isSelected) {
+                    containerClasses += "bg-brand-primary border-brand-primary shadow-lg shadow-brand-primary/30 scale-110 z-10";
+                    textClasses += "text-white";
+                  } else {
+                    containerClasses += "bg-white border-slate-50 shadow-sm shadow-slate-100";
+                    textClasses += "text-slate-900";
+                  }
 
                   return (
                     <Pressable
                       key={`${seat.routeId}-${seatNo}`}
                       disabled={disabled}
                       onPress={() => toggleSeat(seatNo)}
-                      className={`w-[22%] mb-3 h-12 rounded-xl border border-gray-300 items-center justify-center ${bgClass}`}
+                      className={containerClasses}
                     >
-                      <Text className={`font-semibold ${textClass}`}>
-                        {seatNo}
-                      </Text>
+                      <Text className={textClasses}>{seatNo}</Text>
                     </Pressable>
                   );
                 })}
@@ -463,56 +449,67 @@ const RouteDetail = () => {
           )}
         </View>
 
-        {/* Stop points */}
-        <View className="bg-white rounded-2xl p-4 border border-gray-100 mt-4">
-          <Text className="text-base font-extrabold text-gray-900 mb-3">
-            Stop points
-          </Text>
+        {/* Stop points Card */}
+        <View className="bg-white rounded-[2.5rem] p-8 shadow-2xl shadow-slate-200/50 border border-slate-50 mt-6">
+          <View className="flex-row items-center mb-6">
+            <View className="w-8 h-8 rounded-lg bg-indigo-50 items-center justify-center mr-3">
+              <MaterialCommunityIcons name="map-marker-path" size={18} color="#6366F1" />
+            </View>
+            <Text className="text-lg font-black text-slate-900 tracking-tight">Lịch trình chi tiết</Text>
+          </View>
 
           {stops.length === 0 ? (
-            <Text className="text-sm text-gray-500">No stop points</Text>
+            <View className="bg-slate-50 rounded-2xl p-4 border border-dashed border-slate-200">
+               <Text className="text-sm text-slate-400 font-medium text-center italic">Chưa có thông tin lịch trình chi tiết</Text>
+            </View>
           ) : (
-            stops.map((s, idx) => (
-              <View
-                key={s.id}
-                className={`${idx < stops.length - 1 ? "border-b border-gray-100 pb-3 mb-3" : ""}`}
-              >
-                <Text className="text-sm font-semibold text-gray-800">
-                  Stop {s.stopOrder}
-                </Text>
-                <Text className="text-xs text-gray-500 mt-1">
-                  Arrival: {formatTimeHHmm(s.plannedArrivalTime)} • Departure:{" "}
-                  {formatTimeHHmm(s.plannedDepartureTime)}
-                </Text>
-                <Text className="text-sm text-gray-700 mt-1">
-                  {s.note || "—"}
-                </Text>
-              </View>
-            ))
+            <View className="pl-4 border-l-2 border-slate-50">
+              {stops.map((s, idx) => (
+                <View
+                  key={s.id}
+                  className={`relative pl-8 ${idx < stops.length - 1 ? "pb-8" : ""}`}
+                >
+                   {/* Timeline indicator */}
+                   <View className="absolute left-[-9px] top-0 w-4 h-4 rounded-full bg-white border-4 border-indigo-400 z-10" />
+                   {idx < stops.length - 1 && (
+                     <View className="absolute left-[-2px] top-4 w-[2px] h-full bg-slate-50" />
+                   )}
+
+                   <View className="bg-slate-50/50 p-4 rounded-2xl border border-slate-50">
+                      <Text className="text-slate-900 font-black text-sm mb-1">Trạm: {s.note || "Trạm dừng chân"}</Text>
+                      <View className="flex-row items-center">
+                         <MaterialCommunityIcons name="clock-outline" size={12} color="#94A3B8" />
+                         <Text className="text-xs text-slate-400 font-bold ml-1">
+                           Đến: {formatTimeHHmm(s.plannedArrivalTime)} • Đi: {formatTimeHHmm(s.plannedDepartureTime)}
+                         </Text>
+                      </View>
+                   </View>
+                </View>
+              ))}
+            </View>
           )}
         </View>
       </ScrollView>
 
-      {/* Bottom action */}
+      {/* Floating Bottom action area */}
       <View
         onLayout={(e) => {
           setBottomPanelHeight(e.nativeEvent.layout.height);
         }}
-        className="absolute bottom-0 left-0 right-0 px-4 pb-4 pt-2"
-        style={{ backgroundColor: "rgba(245,247,250,0.96)" }}
+        className="absolute bottom-0 left-0 right-0 px-8 pb-10 pt-6 bg-white/90 backdrop-blur-3xl rounded-t-[3rem] border-t border-slate-100 shadow-2xl shadow-brand-dark/20"
       >
-        <View className="bg-white border border-gray-200 rounded-2xl px-4 py-3 mb-3 shadow-sm">
-          <View className="flex-row justify-between items-start">
-            <View className="flex-1 pr-4">
-              <Text className="text-xs text-gray-500">Selected seats</Text>
-              <Text className="text-base font-extrabold text-gray-900 mt-1">
-                {selectedSeats.length > 0 ? selectedSeats.join(", ") : "None"}
+        <View className="bg-slate-50/80 rounded-3xl px-6 py-4 mb-6 border border-slate-50">
+          <View className="flex-row justify-between items-center">
+            <View className="flex-1 pr-4 border-r border-slate-200">
+              <Text className="text-slate-400 font-black text-[10px] uppercase tracking-widest mb-1">Ghế đã chọn</Text>
+              <Text className="text-slate-900 font-black text-base tracking-tight" numberOfLines={1}>
+                {selectedSeats.length > 0 ? selectedSeats.join(", ") : "Chưa chọn"}
               </Text>
             </View>
 
-            <View className="items-end">
-              <Text className="text-xs text-gray-500">Quantity</Text>
-              <Text className="text-base font-extrabold text-gray-900 mt-1">
+            <View className="items-end pl-4">
+              <Text className="text-slate-400 font-black text-[10px] uppercase tracking-widest mb-1">Số lượng</Text>
+              <Text className="text-slate-900 font-black text-base tracking-tight">
                 {selectedSeats.length}
               </Text>
             </View>
@@ -520,19 +517,23 @@ const RouteDetail = () => {
         </View>
 
         <Pressable
-          disabled={!canContinue}
+          disabled={!canContinue || holdingSeat}
           onPress={handleContinue}
-          className={`rounded-2xl py-4 mb-4 items-center justify-center shadow-sm ${
-            canContinue ? "bg-[#12B3A8]" : "bg-gray-300"
+          className={`rounded-3xl py-5 items-center justify-center shadow-2xl active:scale-[0.98] transition-all ${
+            canContinue ? "bg-brand-primary shadow-brand-primary/40" : "bg-slate-100 opacity-60 shadow-none"
           }`}
         >
-          <Text
-            className={`font-extrabold text-base ${
-              canContinue ? "text-white" : "text-gray-500"
-            }`}
-          >
-            {holdingSeat ? "Processing..." : "Continue"}
-          </Text>
+          <View className="flex-row items-center">
+             <Text
+                className={`font-black text-xl tracking-tight ${
+                  canContinue ? "text-white" : "text-slate-400"
+                }`}
+              >
+                {holdingSeat ? "Đang xử lý..." : "Tiếp tục"}
+              </Text>
+              {!holdingSeat && canContinue && <MaterialIcons name="keyboard-arrow-right" size={24} color="white" style={{marginLeft: 4, marginTop: 2}} />}
+              {holdingSeat && <ActivityIndicator size="small" color="white" style={{marginLeft: 8}} />}
+          </View>
         </Pressable>
       </View>
     </View>

@@ -14,23 +14,30 @@ const Header: React.FC<HeaderProps> = ({
   userName,
   routePoint,
 }) => {
-  const displayName = userName?.trim()?.length > 0 ? userName : "Customer";
+  const displayName = userName?.trim()?.length > 0 ? userName : "Khách hàng";
 
   return (
-    <View className="px-4">
-      {/* Top row */}
+    <View className="px-8 mt-4">
+      {isLoggedIn && (
+        <View className="bg-white/10 border border-white/5 self-start px-4 py-1.5 rounded-full mb-4 flex-row items-center backdrop-blur-md">
+           <MaterialCommunityIcons name="star-circle" size={16} color="#0EA5E9" />
+           <Text className="text-white font-black text-[10px] uppercase tracking-widest ml-2">
+              Điểm tích lũy: <Text className="text-brand-primary">{routePoint || "0"}</Text>
+           </Text>
+        </View>
+      )}
       <View className="flex-row justify-between items-center">
-        <View className="flex-1 pr-4">
-          <Text className="text-white text-[26px] font-extrabold">
+        <View className="flex-1 pr-6">
+          <Text className="text-white text-3xl font-black tracking-tighter leading-8">
             {isLoggedIn
-              ? `Welcome back, ${displayName}!`
-              : "Welcome, Customer!"}
+              ? `Chào mừng,\n${displayName}!`
+              : "Chào mừng,\nQuý khách!"}
           </Text>
 
-          <Text className="text-gray-300 mt-2 leading-5">
+          <Text className="text-slate-400 mt-4 leading-6 font-medium text-sm">
             {isLoggedIn
-              ? "Manage routes, bookings and seat inventory with ease."
-              : "Search routes, choose seats and book your next trip easily."}
+              ? "Quản lý hành trình và tận hưởng những chuyến đi tuyệt vời nhất."
+              : "Tìm kiếm và đặt vé những chuyến xe chất lượng cao thật dễ dàng."}
           </Text>
         </View>
 
@@ -40,53 +47,18 @@ const Header: React.FC<HeaderProps> = ({
               router.push("/login");
             }
           }}
-          className={`w-14 h-14 rounded-full items-center justify-center ${
-            isLoggedIn ? "bg-[#12B3A8]" : "bg-[#2C364D]"
+          className={`w-16 h-16 rounded-[2rem] items-center justify-center border ${
+            isLoggedIn 
+              ? "bg-brand-primary border-brand-primary/20 shadow-lg shadow-brand-primary/40" 
+              : "bg-white/10 border-white/5 backdrop-blur-xl"
           }`}
         >
           <MaterialCommunityIcons
-            name={isLoggedIn ? "account" : "account-outline"}
-            size={28}
+            name={isLoggedIn ? "account-check" : "account-outline"}
+            size={32}
             color="white"
           />
         </Pressable>
-      </View>
-
-      {/* Bottom card */}
-      <View className="mt-5 bg-[#263148] rounded-2xl px-4 py-4 flex-row justify-between items-center">
-        <View className="flex-1 pr-4">
-          {isLoggedIn ? (
-            <>
-              <Text className="text-gray-300 text-xs">Route Point</Text>
-              <Text className="text-white text-xl font-extrabold mt-1">
-                {routePoint || "0"}
-              </Text>
-              <Text className="text-gray-400 text-xs mt-1">
-                Continue booking to earn more points
-              </Text>
-            </>
-          ) : (
-            <>
-              <Text className="text-gray-300 text-xs">Guest access</Text>
-              <Text className="text-white text-lg font-extrabold mt-1">
-                Explore available trips
-              </Text>
-              <Text className="text-gray-400 text-xs mt-1">
-                Sign in to save bookings and track route points
-              </Text>
-            </>
-          )}
-        </View>
-
-        <View className="items-center justify-center">
-          <View className="w-12 h-12 rounded-full bg-[#1E9E95] items-center justify-center">
-            <MaterialCommunityIcons
-              name={isLoggedIn ? "map-marker-path" : "bus-clock"}
-              size={24}
-              color="white"
-            />
-          </View>
-        </View>
       </View>
     </View>
   );

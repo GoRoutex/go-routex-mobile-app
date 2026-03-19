@@ -20,28 +20,28 @@ type PaymentMethod = {
 const PAYMENT_METHODS: PaymentMethod[] = [
   {
     id: "qr_pay",
-    name: "QR Pay",
+    name: "Quét mã QR",
     icon: "qrcode-scan",
     iconType: "MaterialCommunityIcons",
-    description: "Scan QR code to pay instantly",
+    description: "Thanh toán nhanh qua ứng dụng Ngân hàng",
   },
   {
     id: "momo",
-    name: "MoMo Wallet",
+    name: "Ví MoMo",
     icon: "wallet",
     iconType: "MaterialCommunityIcons",
-    description: "Pay with MoMo e-wallet",
+    description: "Thanh toán qua ví điện tử MoMo",
   },
   {
     id: "bank_transfer",
-    name: "Bank Transfer",
+    name: "Chuyển khoản",
     icon: "university",
     iconType: "FontAwesome5",
-    description: "Transfer via mobile banking app",
+    description: "Chuyển khoản ngân hàng 24/7",
   },
   {
     id: "credit_card",
-    name: "Credit Card",
+    name: "Thẻ Quốc tế",
     icon: "credit-card",
     iconType: "MaterialCommunityIcons",
     description: "Visa, Mastercard, JCB",
@@ -87,152 +87,161 @@ const PaymentPage = () => {
   const seats = params.selectedSeats ? JSON.parse(params.selectedSeats) : ["A1", "A2"];
 
   return (
-    <View className="flex-1 bg-[#F5F7FA]">
+    <View className="flex-1 bg-brand-surface font-sans">
       {/* Header */}
       <View
-        className="w-full bg-[#192031] pt-16 pb-10"
+        className="w-full bg-brand-dark pt-16 pb-14 overflow-hidden relative"
         style={{
-          borderBottomLeftRadius: 40,
-          borderBottomRightRadius: 40,
+          borderBottomLeftRadius: 60,
+          borderBottomRightRadius: 60,
         }}
       >
-        <View className="flex-row items-center justify-between px-6">
+        <View className="absolute top-0 right-0 w-64 h-64 bg-brand-primary/10 rounded-full -mr-32 -mt-32 blur-3xl opacity-50" />
+        <View className="flex-row items-center justify-between px-8 relative z-10">
           <Pressable
             onPress={() => router.back()}
-            className="h-12 w-12 rounded-2xl bg-white/10 items-center justify-center border border-white/10"
+            className="h-14 w-14 rounded-2xl bg-white/10 items-center justify-center border border-white/5 backdrop-blur-md active:scale-95"
           >
-            <MaterialIcons name="keyboard-arrow-left" size={32} color="white" />
+            <MaterialIcons name="keyboard-arrow-left" size={36} color="white" />
           </Pressable>
 
-          <Text className="text-white font-black text-xl tracking-tight">Checkout</Text>
+          <View className="items-center">
+            <Text className="text-white font-black text-2xl tracking-tight">Thanh toán</Text>
+            <Text className="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] mt-1 opacity-70">Xác nhận đơn hàng</Text>
+          </View>
 
-          <View className="h-12 w-12 rounded-2xl bg-white/10 items-center justify-center border border-white/10">
-            <MaterialCommunityIcons name="help-circle-outline" size={24} color="white" />
+          <View className="h-14 w-14 rounded-2xl bg-brand-primary/20 items-center justify-center border border-brand-primary/20 backdrop-blur-md">
+            <MaterialCommunityIcons name="shield-check" size={28} color="#0EA5E9" />
           </View>
         </View>
 
         {/* Amount in Header */}
-        <View className="mt-8 items-center">
-          <Text className="text-white/60 text-sm font-medium mb-1">Total to Pay</Text>
-          <Text className="text-white font-black text-4xl tracking-tighter">
+        <View className="mt-10 items-center relative z-10">
+          <Text className="text-slate-400 text-[11px] font-black uppercase tracking-[0.2em] mb-2">Tổng tiền cần thanh toán</Text>
+          <Text className="text-white font-black text-5xl tracking-tighter">
             {formatVnd(total)}
           </Text>
         </View>
       </View>
 
       <ScrollView
-        className="flex-1 -mt-6"
+        className="flex-1 -mt-8"
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 140 }}
+        contentContainerStyle={{ paddingHorizontal: 24, paddingBottom: 160 }}
       >
         {/* Timer floating badge */}
-        <View className="flex-row justify-center mb-6">
-          <View className="bg-white border border-gray-100 rounded-full px-6 py-3 flex-row items-center shadow-lg">
-            <View className="bg-red-50 rounded-full p-2 mr-3">
-              <MaterialCommunityIcons name="clock-fast" size={20} color="#FF6B6B" />
+        <View className="flex-row justify-center mb-8">
+          <View className="bg-white border border-slate-100 rounded-3xl px-8 py-4 flex-row items-center shadow-2xl shadow-slate-200/50">
+            <View className="bg-rose-50 rounded-2xl p-2.5 mr-4 shadow-sm">
+              <MaterialCommunityIcons name="clock-fast" size={20} color="#F43F5E" />
             </View>
-            <Text className="text-gray-500 font-semibold mr-2">Secure checkout:</Text>
-            <Text className="text-[#FF6B6B] font-black">{formatTime(timeLeft)}</Text>
+            <View>
+              <Text className="text-slate-400 text-[10px] font-black uppercase tracking-widest leading-3">Phiên giao dịch hết hạn sau</Text>
+              <Text className="text-slate-900 font-extrabold text-lg tracking-tighter mt-0.5">{formatTime(timeLeft)}</Text>
+            </View>
           </View>
         </View>
 
         {/* Order Details Accordion-style */}
-        <View className="bg-white rounded-[32px] p-6 border border-gray-100 mb-6 shadow-sm">
-          <View className="flex-row items-center justify-between mb-6">
+        <View className="bg-white rounded-[2.5rem] p-8 border border-slate-100 mb-8 shadow-2xl shadow-slate-200/40 relative overflow-hidden">
+          <View className="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-full blur-2xl -mr-16 -mt-16 pointer-events-none" />
+          <View className="flex-row items-center justify-between mb-8 relative z-10">
             <View>
-              <Text className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Booking Reference</Text>
-              <Text className="text-lg font-black text-gray-900">#GRX-{Math.floor(100000 + Math.random() * 900000)}</Text>
+              <Text className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Mã đặt vé của bạn</Text>
+              <Text className="text-xl font-black text-slate-900 tracking-tight">#GRX-{Math.floor(100000 + Math.random() * 900000)}</Text>
             </View>
-            <View className="bg-[#EAFBF9] px-3 py-1 rounded-full">
-              <Text className="text-[#12B3A8] text-xs font-bold">Pending</Text>
+            <View className="bg-brand-primary/10 px-5 py-2 rounded-2xl border border-brand-primary/10">
+              <Text className="text-brand-primary text-xs font-black">Chờ xử lý</Text>
             </View>
           </View>
 
-          <View className="h-[1px] bg-gray-50 w-full mb-6" />
+          <View className="h-[2px] bg-slate-50 w-full mb-8" />
 
-          <View className="flex-row items-start mb-6">
-            <View className="mr-4 items-center">
-              <View className="w-3 h-3 rounded-full bg-[#12B3A8] border-2 border-[#12B3A8]/20" />
-              <View className="w-[1px] h-10 bg-gray-200 border-dashed border-[1px]" />
-              <View className="w-3 h-3 rounded-full bg-gray-300 border-2 border-gray-100" />
+          <View className="flex-row items-start mb-8 px-2 relative z-10">
+            <View className="mr-6 items-center">
+              <View className="w-4 h-4 rounded-full bg-brand-primary border-4 border-brand-primary/20" />
+              <View className="w-[2px] h-12 bg-slate-100 border-dashed border-[1px]" />
+              <View className="w-4 h-4 rounded-full bg-slate-200 border-4 border-slate-50" />
             </View>
             <View className="flex-1">
-              <View className="mb-4">
-                <Text className="text-gray-400 text-xs font-bold uppercase tracking-wider">Departure</Text>
-                <Text className="text-gray-900 font-extrabold text-base">{routeInfo.origin}</Text>
+              <View className="mb-6">
+                <Text className="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-1.5">Điểm khởi hành</Text>
+                <Text className="text-slate-900 font-black text-lg tracking-tight">{routeInfo.origin}</Text>
               </View>
               <View>
-                <Text className="text-gray-400 text-xs font-bold uppercase tracking-wider">Arrival</Text>
-                <Text className="text-gray-900 font-extrabold text-base">{routeInfo.destination}</Text>
+                <Text className="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-1.5">Điểm kết thúc</Text>
+                <Text className="text-slate-900 font-black text-lg tracking-tight">{routeInfo.destination}</Text>
               </View>
             </View>
           </View>
 
-          <View className="flex-row justify-between pt-4 border-t border-gray-50">
+          <View className="flex-row justify-between pt-8 border-t border-slate-50 relative z-10">
             <View>
-              <Text className="text-gray-400 text-[10px] font-bold uppercase mb-1">Bus Code</Text>
-              <Text className="text-gray-900 font-black text-sm">{routeInfo.routeCode}</Text>
+              <Text className="text-slate-400 text-[10px] font-black uppercase mb-1.5">Mã chuyến</Text>
+              <Text className="text-slate-900 font-black text-sm tracking-tight">{routeInfo.routeCode}</Text>
             </View>
             <View>
-              <Text className="text-gray-400 text-[10px] font-bold uppercase mb-1">Vehicle</Text>
-              <Text className="text-gray-900 font-black text-sm">{routeInfo.vehicleType}</Text>
+              <Text className="text-slate-400 text-[10px] font-black uppercase mb-1.5">Dòng xe</Text>
+              <Text className="text-slate-900 font-black text-sm tracking-tight">{routeInfo.vehicleType}</Text>
             </View>
             <View className="items-end">
-              <Text className="text-gray-400 text-[10px] font-bold uppercase mb-1">Selected Seats</Text>
-              <View className="flex-row items-center">
-                <MaterialCommunityIcons name="seat-passenger" size={14} color="#12B3A8" style={{ marginRight: 4 }} />
-                <Text className="text-[#12B3A8] font-black text-sm">{seats.join(", ")}</Text>
+              <Text className="text-slate-400 text-[10px] font-black uppercase mb-1.5">Chỗ đã chọn</Text>
+              <View className="flex-row items-center bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100">
+                <MaterialCommunityIcons name="seat-passenger" size={16} color="#0EA5E9" style={{ marginRight: 6 }} />
+                <Text className="text-brand-primary font-black text-sm">{seats.join(", ")}</Text>
               </View>
             </View>
           </View>
         </View>
 
         {/* Payment Methods */}
-        <View className="flex-row items-center justify-between mb-4 px-2">
-          <Text className="text-lg font-black text-gray-900">Payment Method</Text>
-          <Text className="text-gray-400 text-xs font-bold">Step 2 of 2</Text>
+        <View className="flex-row items-center justify-between mb-6 px-4">
+          <Text className="text-2xl font-black text-slate-900 tracking-tight">Phương thức thanh toán</Text>
+          <View className="bg-slate-900/5 px-3 py-1 rounded-lg">
+             <Text className="text-slate-500 text-[10px] font-black uppercase tracking-widest">Bước 2/2</Text>
+          </View>
         </View>
 
         {PAYMENT_METHODS.map((method) => (
           <Pressable
             key={method.id}
             onPress={() => setSelectedMethod(method.id)}
-            className={`flex-row items-center bg-white p-5 rounded-[28px] mb-4 border-2 ${
-              selectedMethod === method.id ? "border-[#12B3A8]" : "border-transparent"
-            } shadow-sm`}
+            className={`flex-row items-center bg-white p-6 rounded-[2.5rem] mb-5 border-2 transition-all ${
+              selectedMethod === method.id ? "border-brand-primary bg-brand-primary/5 shadow-2xl shadow-brand-primary/10 scale-[1.02]" : "border-white shadow-sm shadow-slate-200"
+            }`}
           >
-            <View className={`w-14 h-14 rounded-2xl items-center justify-center ${
-              selectedMethod === method.id ? "bg-[#12B3A8]" : "bg-gray-50"
+            <View className={`w-16 h-16 rounded-[20px] items-center justify-center shadow-sm ${
+              selectedMethod === method.id ? "bg-brand-primary" : "bg-slate-50 border border-slate-100"
             }`}>
               {method.iconType === "MaterialCommunityIcons" ? (
                 <MaterialCommunityIcons
                   name={method.icon as any}
-                  size={28}
-                  color={selectedMethod === method.id ? "white" : "#687076"}
+                  size={32}
+                  color={selectedMethod === method.id ? "white" : "#64748B"}
                 />
               ) : (
                 <FontAwesome5
                   name={method.icon}
-                  size={24}
-                  color={selectedMethod === method.id ? "white" : "#687076"}
+                  size={28}
+                  color={selectedMethod === method.id ? "white" : "#64748B"}
                 />
               )}
             </View>
 
-            <View className="flex-1 ml-4">
-              <Text className={`font-black text-lg ${
-                selectedMethod === method.id ? "text-gray-900" : "text-gray-700"
+            <View className="flex-1 ml-5">
+              <Text className={`font-black text-xl tracking-tight ${
+                selectedMethod === method.id ? "text-slate-900" : "text-slate-800"
               }`}>
                 {method.name}
               </Text>
-              <Text className="text-gray-400 text-xs font-semibold mt-1">{method.description}</Text>
+              <Text className="text-slate-400 text-xs font-bold mt-1 tracking-tight">{method.description}</Text>
             </View>
 
-            <View className={`w-6 h-6 rounded-full border-2 items-center justify-center ${
-              selectedMethod === method.id ? "border-[#12B3A8] bg-[#12B3A8]/10" : "border-gray-200"
+            <View className={`w-8 h-8 rounded-full border-2 items-center justify-center transition-all ${
+              selectedMethod === method.id ? "border-brand-primary bg-brand-primary" : "border-slate-200"
             }`}>
               {selectedMethod === method.id && (
-                <View className="w-3 h-3 rounded-full bg-[#12B3A8]" />
+                <View className="w-3 h-3 rounded-full bg-white shadow-sm" />
               )}
             </View>
           </Pressable>
@@ -241,36 +250,36 @@ const PaymentPage = () => {
 
       {/* Bottom Action Footer */}
       <View
-        className="absolute bottom-0 left-0 right-0 px-6 pb-10 pt-6"
+        className="absolute bottom-0 left-0 right-0 px-8 pb-12 pt-8"
         style={{
-          backgroundColor: "#rgba(245,247,250,0.98)",
-          borderTopLeftRadius: 36,
-          borderTopRightRadius: 36,
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: -10 },
-          shadowOpacity: 0.05,
-          shadowRadius: 20,
-          elevation: 20,
+          backgroundColor: "#rgba(255,255,255,0.9)",
+          borderTopLeftRadius: 40,
+          borderTopRightRadius: 40,
+          shadowColor: "#0F172A",
+          shadowOffset: { width: 0, height: -15 },
+          shadowOpacity: 0.1,
+          shadowRadius: 30,
+          elevation: 30,
         }}
       >
         <Pressable
           onPress={() => {
             router.replace("/");
           }}
-          className="bg-[#12B3A8] rounded-[24px] py-5 items-center justify-center shadow-xl shadow-[#12B3A8]/30"
+          className="bg-brand-primary rounded-3xl py-6 items-center justify-center shadow-2xl shadow-brand-primary/40 active:scale-[0.98] transition-all"
         >
           <View className="flex-row items-center">
-            <MaterialCommunityIcons name="shield-check" size={20} color="white" style={{ marginRight: 8 }} />
-            <Text className="text-white font-black text-lg">
-              Confirm Payment
+            <MaterialCommunityIcons name="lock-check" size={24} color="white" style={{ marginRight: 10 }} />
+            <Text className="text-white font-black text-xl">
+              Xác nhận Thanh toán
             </Text>
           </View>
         </Pressable>
 
-        <View className="mt-4 flex-row justify-center items-center">
-          <MaterialIcons name="lock" size={12} color="#9BA1A6" />
-          <Text className="text-[#9BA1A6] text-[10px] font-bold uppercase tracking-widest ml-1">
-            Secure 256-bit SSL encrypted payment
+        <View className="mt-5 flex-row justify-center items-center opacity-60">
+          <MaterialIcons name="security" size={14} color="#64748B" />
+          <Text className="text-slate-500 text-[10px] font-black uppercase tracking-[0.15em] ml-2">
+            Thanh toán an toàn mã hóa SSL 256-bit
           </Text>
         </View>
       </View>

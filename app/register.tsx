@@ -48,23 +48,21 @@ const Register = () => {
   // MÀN HÌNH SAU KHI CLICK CREATE ACCOUNT (SUCCESS STATE)
   if (isSuccess) {
     return (
-      <View className="flex-1 bg-[#192031] justify-center px-6">
-        <View className="bg-white rounded-[40px] p-8 items-center shadow-2xl">
-          <View className="mb-6 bg-white p-3 rounded-[32px] shadow-sm border border-gray-100">
-            <Image
-              source={require("../assets/images/logo-1.png")}
-              style={{ width: 100, height: 100 }}
-              contentFit="contain"
-            />
+      <View className="flex-1 bg-brand-dark justify-center px-8 relative overflow-hidden">
+        <View className="absolute top-0 right-0 w-80 h-80 bg-brand-primary/20 rounded-full -mr-40 -mt-40 blur-3xl opacity-50" />
+        
+        <View className="bg-white rounded-[3rem] p-10 items-center shadow-2xl relative z-10 border border-white/20">
+          <View className="mb-8 bg-brand-primary/10 p-5 rounded-[2.5rem] shadow-sm border border-brand-primary/10">
+            <MaterialCommunityIcons name="shield-check" size={64} color="#0EA5E9" />
           </View>
 
-          <Text className="text-2xl font-black text-gray-900 text-center mb-3">
+          <Text className="text-3xl font-black text-slate-900 text-center mb-3 tracking-tight">
             Đăng ký thành công!
           </Text>
 
-          <Text className="text-gray-500 text-center leading-6 mb-8 font-medium">
-            Bạn sẽ nhận được email xác nhận cùng với mã OTP code gửi tới {"\n"}
-            <Text className="text-[#12B3A8] font-bold">{email}</Text>
+          <Text className="text-slate-500 text-center leading-7 mb-10 font-medium px-2">
+            Hành trình của bạn đã sẵn sàng. Mã xác thực OTP đã được gửi tới email: {"\n"}
+            <Text className="text-brand-primary font-black">{email}</Text>
           </Text>
 
           <Pressable
@@ -74,13 +72,13 @@ const Register = () => {
                 params: { email },
               });
             }}
-            className="w-full bg-[#12B3A8] rounded-2xl py-4 items-center justify-center shadow-lg shadow-[#12B3A8]/30 mb-4"
+            className="w-full bg-brand-primary rounded-2xl py-5 items-center justify-center shadow-xl shadow-brand-primary/30 mb-6 active:scale-95 transition-all"
           >
-            <Text className="text-white font-black text-lg">Xác thực ngay</Text>
+            <Text className="text-white font-black text-xl">Xác thực ngay</Text>
           </Pressable>
 
-          <Pressable onPress={() => router.back()} className="py-2">
-            <Text className="text-gray-400 font-bold">Quay lại Đăng nhập</Text>
+          <Pressable onPress={() => router.back()} className="py-2 active:opacity-60">
+            <Text className="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Quay lại Đăng nhập</Text>
           </Pressable>
         </View>
       </View>
@@ -91,146 +89,142 @@ const Register = () => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      className="flex-1 bg-[#F5F7FA]"
+      className="flex-1 bg-brand-surface font-sans"
     >
       <View
-        className="w-full bg-[#192031] pt-16 pb-6"
+        className="w-full bg-brand-dark pt-16 pb-12 overflow-hidden relative"
         style={{
-          borderBottomLeftRadius: 30,
-          borderBottomRightRadius: 30,
+          borderBottomLeftRadius: 50,
+          borderBottomRightRadius: 50,
         }}
       >
-        <View className="flex-row items-center justify-between px-3">
+        <View className="absolute top-0 right-0 w-64 h-64 bg-brand-primary/10 rounded-full -mr-32 -mt-32 blur-3xl opacity-50" />
+        <View className="flex-row items-center justify-between px-8 relative z-10">
           <Pressable
             onPress={() => router.back()}
-            className="h-10 w-10 rounded-full bg-slate-700 items-center justify-center"
+            className="h-12 w-12 rounded-2xl bg-white/10 items-center justify-center border border-white/5 backdrop-blur-md active:scale-95"
           >
-            <MaterialIcons name="keyboard-arrow-left" size={28} color="white" />
+            <MaterialIcons name="keyboard-arrow-left" size={32} color="white" />
           </Pressable>
 
-          <Text className="text-white font-extrabold text-lg">Đăng ký</Text>
+          <Text className="text-white font-black text-xl tracking-tight">Đăng ký tài khoản</Text>
 
-          <MaterialCommunityIcons
-            size={26}
-            color="white"
-            name="dots-horizontal"
-          />
+          <View className="w-12 h-12 items-center justify-center">
+             <MaterialCommunityIcons size={28} color="rgba(255,255,255,0.2)" name="dots-horizontal" />
+          </View>
         </View>
       </View>
 
       <ScrollView
-        className="flex-1 px-4"
-        contentContainerStyle={{ paddingTop: 20, paddingBottom: 32 }}
+        className="flex-1 px-8"
+        contentContainerStyle={{ paddingTop: 32, paddingBottom: 48 }}
         showsVerticalScrollIndicator={false}
       >
-        <View className="items-center mb-6">
-        <View className="py-5 px-5">
-          <Image
-            source={require("../assets/images/logo-1.png")}
-            style={{ width: 100, height: 100 }}
-          />
-        </View>
-          <Text className="text-2xl font-extrabold text-gray-900">
+        <View className="items-center mb-10">
+          <View className="w-20 h-20 rounded-3xl bg-brand-primary items-center justify-center shadow-lg shadow-brand-primary/20 mb-6">
+            <MaterialCommunityIcons name="bus" size={40} color="white" />
+          </View>
+          <Text className="text-4xl font-black text-slate-900 tracking-tight">
             Tạo tài khoản
           </Text>
-          <Text className="text-gray-500 mt-2 text-center">
-            Đăng ký để quản lý hành trình và đặt vé của bạn
+          <Text className="text-slate-500 mt-3 text-center font-medium leading-6 max-w-[280px]">
+            Gia nhập cộng đồng Go Routex để quản lý mọi hành trình nhanh chóng
           </Text>
         </View>
 
-        <View className="bg-white rounded-3xl p-5 border border-gray-100">
-          <View className="mb-4">
-            <Text className="text-xs text-gray-500 mb-2">Họ và tên</Text>
+        <View className="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl shadow-slate-200/50">
+          <View className="mb-6">
+            <Text className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Họ và tên</Text>
             <TextInput
               value={fullName}
               onChangeText={setFullName}
-              placeholder="Nhập họ và tên"
-              placeholderTextColor="gray"
-              className="border border-gray-300 rounded-2xl px-4 py-4 text-gray-900 font-medium"
+              placeholder="Nhập họ và tên của bạn"
+              placeholderTextColor="#94A3B8"
+              className="bg-slate-50 border-2 border-slate-50 rounded-2xl px-6 py-4 text-slate-900 font-black text-base focus:border-brand-primary/30"
             />
           </View>
 
-          <View className="mb-4">
-            <Text className="text-xs text-gray-500 mb-2">Tên đăng nhập</Text>
+          <View className="mb-6">
+            <Text className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Tên đăng nhập</Text>
             <TextInput
               value={username}
               onChangeText={setUsername}
               placeholder="Nhập tên đăng nhập"
-              placeholderTextColor="gray"
+              placeholderTextColor="#94A3B8"
               autoCapitalize="none"
-              className="border border-gray-300 rounded-2xl px-4 py-4 text-gray-900 font-medium"
+              className="bg-slate-50 border-2 border-slate-50 rounded-2xl px-6 py-4 text-slate-900 font-black text-base focus:border-brand-primary/30"
             />
           </View>
 
-          <View className="mb-4">
-            <Text className="text-xs text-gray-500 mb-2">Số điện thoại</Text>
+          <View className="mb-6">
+            <Text className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Số điện thoại</Text>
             <TextInput
               value={phone}
               onChangeText={setPhone}
               placeholder="Nhập số điện thoại"
-              placeholderTextColor="gray"
+              placeholderTextColor="#94A3B8"
               keyboardType="phone-pad"
-              className="border border-gray-300 rounded-2xl px-4 py-4 text-gray-900 font-medium"
+              className="bg-slate-50 border-2 border-slate-50 rounded-2xl px-6 py-4 text-slate-900 font-black text-base focus:border-brand-primary/30"
             />
           </View>
 
-          <View className="mb-4">
-            <Text className="text-xs text-gray-500 mb-2">Email</Text>
+          <View className="mb-6">
+            <Text className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Email</Text>
             <TextInput
               value={email}
               onChangeText={setEmail}
               placeholder="Nhập địa chỉ email"
-              placeholderTextColor="gray"
+              placeholderTextColor="#94A3B8"
               keyboardType="email-address"
               autoCapitalize="none"
-              className="border border-gray-300 rounded-2xl px-4 py-4 text-gray-900 font-medium"
+              className="bg-slate-50 border-2 border-slate-50 rounded-2xl px-6 py-4 text-slate-900 font-black text-base focus:border-brand-primary/30"
+            />
+          </View>
+
+          <View className="mb-6">
+            <Text className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Mật khẩu</Text>
+            <TextInput
+              value={password}
+              onChangeText={setPassword}
+              placeholder="••••••••"
+              placeholderTextColor="#94A3B8"
+              secureTextEntry
+              className="bg-slate-50 border-2 border-slate-50 rounded-2xl px-6 py-4 text-slate-900 font-black text-base focus:border-brand-primary/30"
             />
           </View>
 
           <View className="mb-4">
-            <Text className="text-xs text-gray-500 mb-2">Mật khẩu</Text>
-            <TextInput
-              value={password}
-              onChangeText={setPassword}
-              placeholder="Nhập mật khẩu"
-              placeholderTextColor="gray"
-              secureTextEntry
-              className="border border-gray-300 rounded-2xl px-4 py-4 text-gray-900 font-medium"
-            />
-          </View>
-
-          <View className="mb-2">
-            <Text className="text-xs text-gray-500 mb-2">Xác nhận mật khẩu</Text>
+            <Text className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Xác nhận mật khẩu</Text>
             <TextInput
               value={confirmPassword}
               onChangeText={setConfirmPassword}
-              placeholder="Nhập lại mật khẩu"
-              placeholderTextColor="gray"
+              placeholder="••••••••"
+              placeholderTextColor="#94A3B8"
               secureTextEntry
-              className="border border-gray-300 rounded-2xl px-4 py-4 text-gray-900 font-medium"
+              className="bg-slate-50 border-2 border-slate-50 rounded-2xl px-6 py-4 text-slate-900 font-black text-base focus:border-brand-primary/30"
             />
           </View>
 
           <Pressable
             disabled={!canRegister}
             onPress={handleRegister}
-            className={`rounded-2xl py-4 items-center justify-center mt-5 ${
-              canRegister ? "bg-[#12B3A8]" : "bg-gray-300"
+            className={`rounded-2xl py-5 items-center justify-center mt-8 shadow-xl active:scale-95 transition-all ${
+              canRegister ? "bg-brand-primary shadow-brand-primary/30 scale-[1.02]" : "bg-slate-100 shadow-none opacity-50"
             }`}
           >
             <Text
-              className={`font-black text-base ${
-                canRegister ? "text-white" : "text-gray-500"
+              className={`font-black text-xl ${
+                canRegister ? "text-white" : "text-slate-400"
               }`}
             >
-              Tạo tài khoản
+              Đăng ký ngay
             </Text>
           </Pressable>
 
-          <View className="flex-row justify-center items-center mt-5">
-            <Text className="text-gray-500">Đã có tài khoản? </Text>
-            <Pressable onPress={() => router.back()}>
-              <Text className="text-[#12B3A8] font-extrabold">Đăng nhập</Text>
+          <View className="flex-row justify-center items-center mt-8 mb-2">
+            <Text className="text-slate-500 font-medium">Đã có tài khoản? </Text>
+            <Pressable onPress={() => router.back()} className="active:opacity-60">
+              <Text className="text-brand-primary font-black text-base ml-1">Đăng nhập</Text>
             </Pressable>
           </View>
         </View>

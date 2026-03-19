@@ -1,16 +1,15 @@
 import { View, Text } from "react-native";
 import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Feather, Octicons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const HeaderSearchResult = () => {
   const [searchRouteData, setSearchRouteData] = useState<any>(null);
 
-  const originCity = searchRouteData?.originCity || "";
-  const destinationCity = searchRouteData?.destinationCity || "";
-  const departureDate = searchRouteData?.departureDate || "";
-  const returnDate = searchRouteData?.returnDate || "";
-  const seats = searchRouteData?.seats || 0;
+  const originCity = searchRouteData?.originCity || "Hà Nội";
+  const destinationCity = searchRouteData?.destinationCity || "Hải Phòng";
+  const departureDate = searchRouteData?.departureDate || "04-03-2026";
+  const seats = searchRouteData?.seats || 2;
 
   const formattedDepartureDate = departureDate?.replace(/['"]+/g, "");
 
@@ -30,41 +29,48 @@ const HeaderSearchResult = () => {
   }, []);
 
   return (
-    <>
-      {/* !searchRouteData just for testing before API Integration  */}
-      {!searchRouteData && (
-        <View>
-          <View className="flex-row justify-center items-center px-2 w-full">
-            <View className="w-[70%] justify-between items-center flex-row pb-2">
-              <Text className="text-lg text-white font-extrabold caption-top">
-                {originCity || "Paris"}
-              </Text>
-
-              <Feather name="arrow-right" size={24} color="white" />
-              <Text className="text-lg text-white font-extrabold caption-top">
-                {destinationCity || "England"}
-              </Text>
-            </View>
-          </View>
-
-          <View className="flex-row justify-center items-center px-2 w-full">
-            <View className="w-[80%] justify-between items-center flex-row">
-              <Text className="text-sm text-neutral-400 font-extrabold">
-                {formattedDepartureDate || "12-03-2026"}
-              </Text>
-              <Octicons name="dot-fill" size={10} color="white" />
-              <Text className="text-sm text-neutral-400 font-extrabold">
-                {seats || "02"} Seats
-              </Text>
-              <Octicons name="dot-fill" size={10} color="white" />
-              <Text className="text-sm text-neutral-400 font-extrabold">
-                Economy
-              </Text>
-            </View>
-          </View>
+    <View className="px-2">
+      <View className="flex-row justify-center items-center mb-4">
+        <View className="flex-row items-center bg-white/5 px-6 py-3 rounded-2xl border border-white/5 backdrop-blur-md">
+           <Text className="text-xl text-white font-black tracking-tighter">
+             {originCity}
+           </Text>
+           <View className="mx-4 bg-brand-primary/20 p-1.5 rounded-full">
+              <MaterialCommunityIcons name="arrow-right" size={16} color="#0EA5E9" />
+           </View>
+           <Text className="text-xl text-white font-black tracking-tighter">
+             {destinationCity}
+           </Text>
         </View>
-      )}
-    </>
+      </View>
+
+      <View className="flex-row justify-center items-center space-x-3">
+          <View className="flex-row items-center">
+             <MaterialCommunityIcons name="calendar-range" size={14} color="#0EA5E9" style={{marginRight: 6}} />
+             <Text className="text-xs text-slate-400 font-black uppercase tracking-widest">
+               {formattedDepartureDate}
+             </Text>
+          </View>
+          
+          <View className="w-1 h-1 rounded-full bg-slate-600" />
+          
+          <View className="flex-row items-center">
+             <MaterialCommunityIcons name="account-group-outline" size={14} color="#0EA5E9" style={{marginRight: 6}} />
+             <Text className="text-xs text-slate-400 font-black uppercase tracking-widest">
+               {seats} Chỗ
+             </Text>
+          </View>
+
+          <View className="w-1 h-1 rounded-full bg-slate-600" />
+
+          <View className="flex-row items-center">
+             <MaterialCommunityIcons name="shield-check-outline" size={14} color="#10B981" style={{marginRight: 6}} />
+             <Text className="text-xs text-slate-400 font-black uppercase tracking-widest">
+               An toàn
+             </Text>
+          </View>
+      </View>
+    </View>
   );
 };
 
